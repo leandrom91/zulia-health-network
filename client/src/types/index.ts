@@ -1,7 +1,12 @@
 export enum ClinicType {
-  TYPE_1 = 'TYPE_1', // Ambulatorio Urbano / Rural Tipo 1
-  TYPE_2 = 'TYPE_2', // Ambulatorio Urbano Tipo 2
-  TYPE_3 = 'TYPE_3'  // Ambulatorio Urbano Tipo 3
+  TYPE_1 = 'TYPE_1',         // Ambulatorio Urbano / Rural Tipo 1
+  TYPE_2 = 'TYPE_2',         // Ambulatorio Urbano Tipo 2
+  TYPE_3 = 'TYPE_3',         // Ambulatorio Urbano Tipo 3
+  AMBULATORIO_I = 'TYPE_1',  // Alias
+  AMBULATORIO_II = 'TYPE_2', // Alias
+  AMBULATORIO_III = 'TYPE_3',// Alias
+  HOSPITAL = 'HOSPITAL',
+  CDI = 'CDI'
 }
 
 export enum ServiceType {
@@ -56,6 +61,7 @@ export interface Clinic {
   googleMapsUrl: string;
   schedule: string;
   dailyQuotaTotal: number;
+  dailyQuotaAvailable: number;
   isActive?: boolean;
   director?: ClinicDirector;
   staff?: ClinicStaff;
