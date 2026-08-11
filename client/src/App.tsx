@@ -57,9 +57,9 @@ export function App() {
         type: selectedType,
         service: selectedService,
       });
-      setClinics(data);
+      setClinics(Array.isArray(data) ? data : []);
       const ann = await fetchAnnouncements();
-      setAnnouncements(ann);
+      setAnnouncements(Array.isArray(ann) ? ann : []);
     } catch (err) {
       console.error('Error loading data', err);
     } finally {

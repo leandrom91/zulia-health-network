@@ -178,10 +178,13 @@ export const fetchClinics = async (filters?: {
 export const fetchClinicById = async (id: number): Promise<Clinic | null> => {
   try {
     const response = await api.get<Clinic>(`/clinics/${id}`);
-    return response.data;
+    if (response.data && typeof response.data === 'object' && 'id' in response.data) {
+      return response.data;
+    }
   } catch (error) {
-    return DEFAULT_FALLBACK_CLINICS.find(c => c.id === id) || null;
+    // fallback below
   }
+  return DEFAULT_FALLBACK_CLINICS.find(c => c.id === id) || null;
 };
 
 export const updateClinicServiceStatus = async (
@@ -227,16 +230,19 @@ export const updateClinicStaffCount = async (
 export const fetchAnnouncements = async (): Promise<Announcement[]> => {
   try {
     const response = await api.get<Announcement[]>('/announcements');
-    return response.data;
+    if (Array.isArray(response.data)) {
+      return response.data;
+    }
   } catch (error) {
-    return [
-      {
-        id: 1,
-        title: 'Compromiso de Solidaridad Institucional',
-        content: 'Desde el Estado Zulia ratificamos el apoyo y solidaridad con el pueblo hermano de Caracas y La Guaira ante contingencias climáticas. El sistema de salud zuliano activo y desplegado.',
-        bannerType: 'SOLIDARITY',
-        isActive: true,
-      },
-    ];
+    // fallback below
   }
+  return [
+    {
+      id: 1,
+      title: 'Compromiso de Solidaridad Institucional',
+      content: 'Desde el Estado Zulia ratificamos el apoyo y solidaridad con el pueblo hermano de Caracas y La Guaira ante contingencias climáticas. El sistema de salud zuliano activo y desplegado.',
+      bannerType: 'SOLIDARITY',
+      isActive: true,
+    },
+  ];
 };
