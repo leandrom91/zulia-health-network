@@ -23,12 +23,20 @@ const ALLOWED_ORIGINS = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow server-to-server requests (no origin) and whitelisted origins
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`CORS bloqueado: origen no permitido → ${origin}`));
+    // Allow requests with no origin (like mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+
+    // Allow localhost, any *.vercel.app deployment URL, or explicit CLIENT_URL
+    if (
+      origin.includes('localhost') ||
+      origin.endsWith('.vercel.app') ||
+      (process.env.CLIENT_URL && origin === process.env.CLIENT_URL)
+    ) {
+      return callback(null, true);
     }
+
+    console.warn(`⚠️ CORS blocked request from origin: ${origin}`);
+    callback(new Error(`CORS bloqueado: origen no permitido → ${origin}`));
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
