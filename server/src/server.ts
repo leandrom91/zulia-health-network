@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import clinicRoutes from './routes/clinicRoutes';
 import authRoutes from './routes/authRoutes';
@@ -10,24 +12,87 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(express.json());
+// ─── Allowed Origins (CORS) ───────────────────────────────────────────────────
+// In production, only allow requests from your Vercel domain.
+// Locally, also allow localhost:3000 (Vite dev server).
+const ALLOWED_ORIGINS = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  process.env.CLIENT_URL,               // e.g. https://zulia-health-network.vercel.app
+].filter(Boolean) as string[];
 
-// API Routes
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow server-to-server requests (no origin) and whitelisted origins
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS bloqueado: origen no permitido → ${origin}`));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
+// ─── Helmet (HTTP Security Headers) ─────────────────────────────────────────
+// Sets X-Frame-Options, X-Content-Type-Options, HSTS, CSP, etc.
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }, // allow images from same domain
+}));
+
+// ─── Body Size Limit ─────────────────────────────────────────────────────────
+// Prevents payload-based denial-of-service attacks.
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// ─── General Rate Limiter ─────────────────────────────────────────────────────
+// Max 100 requests per IP per 15 minutes for all /api routes.
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiadas solicitudes. Por favor intente de nuevo en 15 minutos.' },
+});
+
+// ─── Strict Auth Rate Limiter ─────────────────────────────────────────────────
+// Max 10 login attempts per IP per 15 minutes to prevent brute-force.
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiados intentos de inicio de sesión. Intente en 15 minutos.' },
+});
+
+// ─── Apply Limiters ──────────────────────────────────────────────────────────
+app.use('/api', generalLimiter);
+app.use('/api/auth', authLimiter);
+
+// ─── API Routes ───────────────────────────────────────────────────────────────
 app.use('/api', clinicRoutes);
 app.use('/api/auth', authRoutes);
 
+// ─── Health Check ─────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {
   res.json({ status: 'OK', service: 'Zulia Health Network API', version: '1.0.0' });
 });
 
-// Global Error Handler Middleware
+// ─── Global Error Handler ─────────────────────────────────────────────────────
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  // Don't expose internal stack traces to the client in production
+  const isDev = process.env.NODE_ENV !== 'production';
   console.error('❌ [SERVER GLOBAL ERROR]:', err);
-  res.status(500).json({ error: err?.message || 'Error interno del servidor' });
+  res.status(err.status || 500).json({
+    error: err?.message || 'Error interno del servidor',
+    ...(isDev && { stack: err?.stack }),
+  });
 });
 
+// ─── Start Server ─────────────────────────────────────────────────────────────
 app.listen(PORT, async () => {
   console.log(`🚀 Server listening on http://localhost:${PORT}`);
+  console.log(`🔐 CORS allowed origins: ${ALLOWED_ORIGINS.join(', ')}`);
   await testConnection();
 });

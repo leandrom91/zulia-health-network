@@ -111,13 +111,18 @@ INSERT INTO clinic_services (clinic_id, service_type, status, notes) VALUES
 (4, 'DENTISTRY', 'AVAILABLE', 'Odontología preventiva'),
 (4, 'EMERGENCY', 'AVAILABLE', 'Emergencia diurna');
 
--- Images Data
+-- Images Data (using real MPPS Zulia photos)
 INSERT INTO clinic_images (clinic_id, image_url, caption, is_primary) VALUES
-(1, 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80', 'Fachada Principal Ambulatorio Corito 1', 1),
-(1, 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=1200&q=80', 'Área de Odontología y Consulta Externa', 0),
-(1, 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80', 'Laboratorio Clínico y Muestreo', 0),
-(2, 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=1200&q=80', 'Instalaciones La Victoria', 1),
-(3, 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&w=1200&q=80', 'Centro Gómez Padrón Sabaneta', 1);
+(1, '/mpps-fachada-corito1.jpg', 'Fachada e Instalaciones Principales Ambulatorio Corito 1', 1),
+(1, '/mpps-consultorio-medico.jpg', 'Consultorio Médico de Atención Primaria e Integral', 0),
+(1, '/mpps-odontologia-laboratorio.jpg', 'Área de Odontología y Exámenes Clínicos Especializados', 0),
+(1, '/mpps-farmacia-insumos.jpg', 'Despacho de Farmacia e Insumos Sanitarios', 0),
+(1, '/mpps-personal-medico.jpg', 'Personal Médico y Equipo de Enfermería Activo en Planta', 0),
+(2, '/mpps-ambulatorio-la-victoria.jpg', 'Fachada e Instalaciones Médicas Ambulatorio La Victoria', 1),
+(2, '/mpps-emergencia-evaluacion.jpg', 'Área de Admisión, Evaluación y Cuidados de Emergencia', 0),
+(3, '/mpps-ambulatorio-gomez-padron.jpg', 'Infraestructura General Ambulatorio Urbano III Gómez Padrón', 1),
+(3, '/mpps-laboratorio-clinico.jpg', 'Laboratorio Clínico y Módulo de Atención Especializada', 0),
+(4, '/mpps-ambulatorio-san-francisco.jpg', 'Fachada Ambulatorio San Francisco La Coromoto', 1);
 
 -- 8. Users Data (Initial Admin & Coordinators for Zulia Network)
 -- Password for admin: Admin321! (SHA256: e7b960b73c242096f9260c6d32eb34d193d56b00045e7f12e105e114a822bcbb)
