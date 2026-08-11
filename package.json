@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "vercel-build": "cd server && npm install && cd ../client && npm install && npm run build"
+    "vercel-build": "npm install --prefix server && npm install --prefix client && npm run build --prefix client"
   }
 }
