@@ -90,9 +90,17 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
   });
 });
 
-// ─── Start Server ─────────────────────────────────────────────────────────────
-app.listen(PORT, async () => {
-  console.log(`🚀 Server listening on http://localhost:${PORT}`);
-  console.log(`🔐 CORS allowed origins: ${ALLOWED_ORIGINS.join(', ')}`);
-  await testConnection();
-});
+// ─── Start Server (local dev only) ───────────────────────────────────────────
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, async () => {
+    console.log(`🚀 Server listening on http://localhost:${PORT}`);
+    console.log(`🔐 CORS allowed origins: ${ALLOWED_ORIGINS.join(', ')}`);
+    await testConnection();
+  });
+} else {
+  // In production (Vercel), just test the DB connection once on cold start
+  testConnection();
+}
+
+// ─── Export for Vercel Serverless ────────────────────────────────────────────
+export default app;
