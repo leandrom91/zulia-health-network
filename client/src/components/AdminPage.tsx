@@ -85,6 +85,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ clinics, onRefreshData, on
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [activeTab, setActiveTab] = useState<'users' | 'clinics'>('clinics');
   
   // Clinics Management & Filter Search State
@@ -217,15 +218,24 @@ export const AdminPage: React.FC<AdminPageProps> = ({ clinics, onRefreshData, on
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
+    setIsLoggingIn(true);
     try {
       const response = await api.post('/auth/login', { username, password });
-      setUser(response.data.user);
-      localStorage.setItem('zulia_cms_user', JSON.stringify(response.data.user));
-      if (response.data.token) {
-        localStorage.setItem('zulia_cms_token', response.data.token);
+      if (response.data?.user) {
+        setUser(response.data.user);
+        localStorage.setItem('zulia_cms_user', JSON.stringify(response.data.user));
+        if (response.data.token) {
+          localStorage.setItem('zulia_cms_token', response.data.token);
+        }
+      } else {
+        setLoginError('Error al procesar la respuesta del servidor.');
       }
     } catch (err: any) {
-      setLoginError('Credenciales inválidas. Verifique su usuario y contraseña encriptada (admin / Admin321!).');
+      console.error('Login error:', err);
+      const msg = err.response?.data?.error || 'Credenciales inválidas. Verifique su usuario y contraseña encriptada (admin / Admin321!).';
+      setLoginError(msg);
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -539,10 +549,20 @@ export const AdminPage: React.FC<AdminPageProps> = ({ clinics, onRefreshData, on
 
               <button
                 type="submit"
-                className="w-full py-3.5 text-xs font-black uppercase tracking-wider text-white bg-gradient-to-r from-red-800 via-red-700 to-amber-600 rounded-xl shadow-lg hover:opacity-95 transition-all flex items-center justify-center gap-2"
+                disabled={isLoggingIn}
+                className="w-full py-3.5 text-xs font-black uppercase tracking-wider text-white bg-gradient-to-r from-red-800 via-red-700 to-amber-600 rounded-xl shadow-lg hover:opacity-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Ingresar al Panel /admin</span>
+                {isLoggingIn ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Verificando credenciales...</span>
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Ingresar al Panel /admin</span>
+                  </>
+                )}
               </button>
             </form>
 
