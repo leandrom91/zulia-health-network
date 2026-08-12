@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Clinic, ServiceType, ServiceStatus, AuthUser, ClinicType } from '../types';
 import { SERVICE_NAMES } from './ServiceBadge';
-import { updateClinicServiceStatus, updateClinicStaffCount } from '../services/api';
+import { updateClinicServiceStatus, updateClinicStaffCount, api } from '../services/api';
 import {
   Lock,
   ShieldCheck,
@@ -27,7 +27,6 @@ import {
   Check,
   Save
 } from 'lucide-react';
-import axios from 'axios';
 
 interface AdminPageProps {
   clinics: Clinic[];
@@ -201,7 +200,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ clinics, onRefreshData, on
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('/api/auth/users');
+      const response = await api.get('/auth/users');
       setUsersList(response.data);
     } catch (err: any) {
       console.error('Error fetching users:', err);
@@ -219,7 +218,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ clinics, onRefreshData, on
     e.preventDefault();
     setLoginError('');
     try {
-      const response = await axios.post('/api/auth/login', { username, password });
+      const response = await api.post('/auth/login', { username, password });
       setUser(response.data.user);
       localStorage.setItem('zulia_cms_user', JSON.stringify(response.data.user));
       if (response.data.token) {
@@ -246,7 +245,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ clinics, onRefreshData, on
     );
 
     try {
-      await axios.put(`/api/clinics/${clinicId}/status`, { isActive: newState });
+      await api.put(`/clinics/${clinicId}/status`, { isActive: newState });
       setSuccessMessage(`Estado de ambulatorio cambiado a ${newState ? '🟢 ACTIVO' : '🔴 INACTIVO'}.`);
       onRefreshData();
       setTimeout(() => setSuccessMessage(''), 3500);
@@ -324,7 +323,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ clinics, onRefreshData, on
     const parishVal = newClinicParish && newClinicParish.trim() ? newClinicParish.trim() : 'Central';
 
     try {
-      const response = await axios.post('/api/clinics', {
+      const response = await api.post('/clinics', {
         name: newClinicName.trim(),
         type: newClinicType,
         municipality: newClinicMunicipality,
@@ -379,7 +378,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ clinics, onRefreshData, on
       }
 
       try {
-        await axios.delete(`/api/clinics/${id}`);
+        await api.delete(`/clinics/${id}`);
         setSuccessMessage(`Ambulatorio "${name}" eliminado exitosamente.`);
         onRefreshData();
         setTimeout(() => setSuccessMessage(''), 4000);
@@ -396,7 +395,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ clinics, onRefreshData, on
     if (!newFullName || !newUsername || !newPassword) return;
 
     try {
-      await axios.post('/api/auth/users', {
+      await api.post('/auth/users', {
         fullName: newFullName,
         username: newUsername,
         password: newPassword,
@@ -425,7 +424,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ clinics, onRefreshData, on
     }
     if (window.confirm(`¿Está seguro de revocar el acceso a @${uname}?`)) {
       try {
-        await axios.delete(`/api/auth/users/${id}`);
+        await api.delete(`/auth/users/${id}`);
         setSuccessMessage(`Acceso de @${uname} revocado exitosamente.`);
         fetchUsers();
         setTimeout(() => setSuccessMessage(''), 4000);
