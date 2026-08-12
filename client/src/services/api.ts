@@ -1,10 +1,7 @@
 import axios from 'axios';
 import { Clinic, Announcement, ServiceType, ServiceStatus, ClinicType } from '../types';
 
-const envUrl = import.meta.env.VITE_API_URL;
-const API_BASE = (envUrl && envUrl.startsWith('http'))
-  ? envUrl
-  : 'https://zulia-health-api.onrender.com/api';
+const API_BASE = 'https://zulia-health-api.onrender.com/api';
 
 export const api = axios.create({
   baseURL: API_BASE,
