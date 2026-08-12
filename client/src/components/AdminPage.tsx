@@ -122,7 +122,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ clinics, onRefreshData, on
   // Reload admin clinics directly from API
   const reloadAdminClinics = async () => {
     try {
-      const res = await axios.get('/api/clinics');
+      const res = await api.get('/clinics');
       if (Array.isArray(res.data) && res.data.length > 0) {
         setAdminClinics(res.data);
       }
