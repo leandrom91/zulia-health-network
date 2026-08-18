@@ -97,14 +97,15 @@ export const ClinicCard: React.FC<ClinicCardProps> = ({ clinic, onSelectClinic }
       {/* Card Actions */}
       <div className="p-4 pt-0 flex items-center justify-between gap-2">
         <a
-          href={clinic.googleMapsUrl}
+          href={clinic.googleMapsUrl || `https://www.google.com/maps/dir/?api=1&destination=${clinic.latitude},${clinic.longitude}`}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-colors"
+          className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 border border-slate-200 hover:border-blue-200 rounded-xl transition-all shadow-xs"
+          title={`Abrir ruta en Google Maps hacia ${clinic.name}`}
         >
-          <Navigation className="w-3.5 h-3.5 text-blue-600" />
-          <span>Iniciar Ruta</span>
+          <Navigation className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+          <span>Cómo llegar</span>
         </a>
 
         <button
@@ -112,10 +113,10 @@ export const ClinicCard: React.FC<ClinicCardProps> = ({ clinic, onSelectClinic }
             e.stopPropagation();
             onSelectClinic(clinic);
           }}
-          className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-bold text-white zulia-gradient-bg hover:opacity-95 rounded-xl shadow-md transition-all"
+          className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2.5 text-xs font-extrabold text-white zulia-gradient-bg hover:opacity-95 rounded-xl shadow-md transition-all uppercase tracking-wider"
         >
           <span>Ver Ficha</span>
-          <ChevronRight className="w-3.5 h-3.5" />
+          <ChevronRight className="w-3.5 h-3.5 shrink-0" />
         </button>
       </div>
     </div>

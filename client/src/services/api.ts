@@ -20,18 +20,18 @@ let DEFAULT_FALLBACK_CLINICS: Clinic[] = [
     address: 'Sector Corito 1, Av. 19B con Calle 108, Maracaibo, Zulia',
     latitude: 10.608333,
     longitude: -71.6375,
-    googleMapsUrl: 'https://maps.google.com/?q=10.608333,-71.637500',
-    schedule: '7:00 AM - 1:00 PM',
+    googleMapsUrl: 'https://www.google.com/maps/dir/?api=1&destination=10.608333,-71.637500',
+    schedule: '7:00 AM - 5:00 PM',
     dailyQuotaTotal: 60,
     dailyQuotaAvailable: 42,
     isActive: true,
     director: {
       fullName: 'Dra. María Elena Gutiérrez',
       title: 'Directora Médica Especialista',
-      photoUrl: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80',
+      photoUrl: '/mpps-personal-medico.jpg',
     },
     staff: {
-      activeDoctors: 8,
+      activeDoctors: 10,
       activeNurses: 14,
     },
     services: {
@@ -44,9 +44,33 @@ let DEFAULT_FALLBACK_CLINICS: Clinic[] = [
     images: [
       {
         id: 101,
-        imageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80',
-        caption: 'Fachada Principal Ambulatorio Corito 1',
+        imageUrl: '/mpps-fachada-corito1.jpg',
+        caption: 'Fachada e Instalaciones Principales Ambulatorio Corito 1',
         isPrimary: true,
+      },
+      {
+        id: 102,
+        imageUrl: '/mpps-consultorio-medico.jpg',
+        caption: 'Consultorio Médico de Atención Primaria e Integral con Autoridades Sanitarias',
+        isPrimary: false,
+      },
+      {
+        id: 103,
+        imageUrl: '/mpps-odontologia-laboratorio.jpg',
+        caption: 'Área de Odontología y Exámenes Clínicos Especializados',
+        isPrimary: false,
+      },
+      {
+        id: 104,
+        imageUrl: '/mpps-farmacia-insumos.jpg',
+        caption: 'Despacho de Farmacia e Insumos Sanitarios de la Red Popular',
+        isPrimary: false,
+      },
+      {
+        id: 105,
+        imageUrl: '/mpps-personal-medico.jpg',
+        caption: 'Personal Médico y Equipo de Enfermería Activo en Planta',
+        isPrimary: false,
       },
     ],
   },
@@ -160,7 +184,13 @@ export const fetchClinics = async (filters?: {
 
   if (filters?.search) {
     const q = filters.search.toLowerCase();
-    result = result.filter(c => c.name.toLowerCase().includes(q) || c.address.toLowerCase().includes(q));
+    result = result.filter(
+      c =>
+        c.name.toLowerCase().includes(q) ||
+        c.address.toLowerCase().includes(q) ||
+        c.parish.toLowerCase().includes(q) ||
+        c.municipality.toLowerCase().includes(q)
+    );
   }
   if (filters?.municipality && filters.municipality !== 'ALL') {
     result = result.filter(c => c.municipality === filters.municipality);

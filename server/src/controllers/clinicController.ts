@@ -13,8 +13,8 @@ let inMemoryClinics: any[] = [
     address: 'Sector Corito 1, Av. 19B con Calle 108, Maracaibo, Zulia',
     latitude: 10.608333,
     longitude: -71.6375,
-    googleMapsUrl: 'https://maps.google.com/?q=10.608333,-71.637500',
-    schedule: '7:00 AM - 1:00 PM',
+    googleMapsUrl: 'https://www.google.com/maps/dir/?api=1&destination=10.608333,-71.637500',
+    schedule: '7:00 AM - 5:00 PM',
     dailyQuotaTotal: 60,
     dailyQuotaAvailable: 42,
     isActive: true,
@@ -24,7 +24,7 @@ let inMemoryClinics: any[] = [
       photoUrl: '/mpps-personal-medico.jpg',
     },
     staff: {
-      activeDoctors: 8,
+      activeDoctors: 10,
       activeNurses: 14,
     },
     services: {
@@ -305,7 +305,8 @@ export const getClinics = async (req: Request, res: Response) => {
         (c) =>
           c.name.toLowerCase().includes(q) ||
           c.address.toLowerCase().includes(q) ||
-          c.parish.toLowerCase().includes(q)
+          c.parish.toLowerCase().includes(q) ||
+          c.municipality.toLowerCase().includes(q)
       );
     }
     if (municipality && municipality !== 'ALL') {

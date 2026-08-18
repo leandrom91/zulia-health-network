@@ -112,32 +112,83 @@ export const SearchAndIndicators: React.FC<SearchAndIndicatorsProps> = ({
 
           {/* Text Input Search by Name/Sector */}
           <div className="space-y-2">
-            <label className="block text-xs md:text-sm font-black uppercase text-slate-700 tracking-wider">
-              BÚSQUEDA POR NOMBRE O SECTOR
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="block text-xs md:text-sm font-black uppercase text-slate-700 tracking-wider">
+                BÚSQUEDA POR NOMBRE O SECTOR
+              </label>
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  className="text-[11px] text-red-600 font-bold hover:underline"
+                >
+                  Borrar texto
+                </button>
+              )}
+            </div>
             <div className="relative">
-              <Search className="w-5 h-5 text-slate-400 absolute left-3.5 top-3.5" />
+              <Search className="w-5 h-5 text-blue-600 absolute left-3.5 top-3.5 pointer-events-none" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Ej: Corito, Maracaibo, Laboratorio..."
-                className="w-full pl-11 pr-4 py-3 text-sm font-bold bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none"
+                placeholder="Ej: Corito, La Victoria, Sabaneta, San Francisco..."
+                className="w-full pl-11 pr-10 py-3 text-sm font-bold bg-white text-slate-900 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:outline-none shadow-xs transition-all placeholder:text-slate-400 font-sans"
               />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center text-xs font-black transition-colors"
+                  title="Limpiar búsqueda"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Quick Sector Tags for Instant Filtering */}
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              <span className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider mr-1">
+                Sectores clave:
+              </span>
+              {[
+                { label: '⭐ Corito 1', query: 'Corito' },
+                { label: 'La Victoria', query: 'La Victoria' },
+                { label: 'Sabaneta', query: 'Sabaneta' },
+                { label: 'San Francisco', query: 'San Francisco' },
+              ].map((chip) => (
+                <button
+                  key={chip.query}
+                  type="button"
+                  onClick={() => setSearch(search === chip.query ? '' : chip.query)}
+                  className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-all ${
+                    search === chip.query
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                      : 'bg-slate-100 hover:bg-blue-50 text-slate-700 border-slate-200 hover:border-blue-300'
+                  }`}
+                >
+                  {chip.label}
+                </button>
+              ))}
             </div>
           </div>
 
           {/* Clear Filters Button */}
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center justify-between pt-1">
             <button
               onClick={resetFilters}
-              className="text-xs text-blue-700 font-extrabold hover:text-blue-900 flex items-center gap-1.5 transition-colors uppercase tracking-wider"
+              className="text-xs text-blue-700 font-extrabold hover:text-blue-900 flex items-center gap-1.5 transition-colors uppercase tracking-wider bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-200"
             >
               <RefreshCw className="w-3.5 h-3.5" /> Limpiar Filtros
             </button>
 
             <span className="text-xs text-slate-500 font-bold">
-              Mostrando centros activos en Zulia
+              {search ? (
+                <span className="text-blue-700 font-extrabold">Filtrando por: "{search}"</span>
+              ) : (
+                'Mostrando centros activos en Zulia'
+              )}
             </span>
           </div>
 

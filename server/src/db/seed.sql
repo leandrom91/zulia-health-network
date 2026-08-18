@@ -20,7 +20,7 @@ INSERT INTO announcements (id, title, content, banner_type, is_active) VALUES
 
 -- Clinic #1: ESTRELLA CASE: Ambulatorio Urbano I Corito 1
 INSERT INTO clinics (id, name, type, municipality, parish, address, latitude, longitude, google_maps_url, schedule, daily_quota_total, daily_quota_available) VALUES
-(1, 'Ambulatorio Urbano I Corito 1', 'TYPE_1', 'Maracaibo', 'Cristo de Aranza', 'Sector Corito 1, Av. 19B con Calle 108, Maracaibo, Zulia', 10.608333, -71.637500, 'https://maps.google.com/?q=10.608333,-71.637500', '7:00 AM - 1:00 PM', 60, 42);
+(1, 'Ambulatorio Urbano I Corito 1', 'TYPE_1', 'Maracaibo', 'Cristo de Aranza', 'Sector Corito 1, Av. 19B con Calle 108, Maracaibo, Zulia', 10.608333, -71.637500, 'https://www.google.com/maps/dir/?api=1&destination=10.608333,-71.637500', '7:00 AM - 5:00 PM', 60, 42);
 
 -- Clinic #2: Ambulatorio Urbano II La Victoria
 INSERT INTO clinics (id, name, type, municipality, parish, address, latitude, longitude, google_maps_url, schedule, daily_quota_total, daily_quota_available) VALUES
@@ -67,7 +67,7 @@ INSERT INTO clinic_directors (clinic_id, full_name, title, photo_url) VALUES
 
 -- Staff Count Data
 INSERT INTO clinic_staff (clinic_id, active_doctors, active_nurses) VALUES
-(1, 8, 14),
+(1, 10, 14),
 (2, 16, 28),
 (3, 24, 45),
 (4, 12, 20),
